@@ -16,9 +16,8 @@ function pageLoad() {
         notes: ""
     }, "Family")
 
-    localData.editTodo({
-        oldName: "morn",
-        title: "morn",
+    localData.newTodo({
+        title: "goren",
         description: "maybe not today",
         date: "15-12-2024",
         time: "15:00",
@@ -28,6 +27,8 @@ function pageLoad() {
 
     localData.checkTodo("morn", "Family");
     localData.prioTodo("morn", "5", "Family");
+    localData.deleteTodo("morn", "Family");
+    localData.deleteProject("Family");
 
     
 }

@@ -1,9 +1,12 @@
 function getStorage() {
     if (localStorage.length === 0) {
-        return [{
+        const store = {
             name: "Default",
             todos: []
-        }];
+        };
+
+        localStorage.setItem(store.name, JSON.stringify(store));
+        return [[store], ["Default"]];
     }
     let storage = [];
     let keys = Object.keys(localStorage);
@@ -16,7 +19,7 @@ function getStorage() {
 
     }
 
-    return storage;
+    return [storage, keys];
 }
 
 
@@ -26,4 +29,10 @@ function saveStorage(project) {
     localStorage.setItem(project.name, jsonProject);
 }
 
-export {getStorage, saveStorage};
+function deleteStorage(project) {
+
+    localStorage.removeItem(project);
+}
+
+
+export {getStorage, saveStorage, deleteStorage};

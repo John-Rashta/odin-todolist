@@ -1,10 +1,10 @@
 import createTodo from "./todo.js";
-import { getStorage, saveStorage } from "./storage.js";
+import { getStorage, saveStorage, deleteStorage } from "./storage.js";
 
 
 export default function setupData() {
 
-    const localData = getStorage();
+    const [localData, storeKeys] = getStorage();
 
     for (let proj of localData) {
 
@@ -139,8 +139,72 @@ export default function setupData() {
         }
     }
 
+    function getSetup() {
 
-    return {newTodo, prioTodo, checkTodo, newProject, editTodo}
+        return {
+            Default: localData[0],
+            Projects: storeKeys
+        }
+    }
+
+    function deleteProject(projectName) {
+
+        for (let key in localData) {
+
+            if (localData[key].name === projectName) {
+
+                localData.splice(key, 1);
+                deleteStorage(projectName);
+                return;
+
+
+            }
+        }
+
+       
+
+
+
+    }
+
+    function deleteTodo(todoTitle, projName) {
+
+
+        for (let proj of localData) {
+
+            if (proj["name"] === projName) {
+
+                for (let todo in proj["todos"]) {
+
+                    if (proj["todos"][todo].title === todoTitle) {
+
+                        proj["todos"].splice(todo, 1);
+                        break;
+                        
+                    }
+                }
+
+                saveStorage(proj);
+                break;
+            }
+        }
+
+
+
+
+    }
+
+
+    return {
+        newTodo, 
+        prioTodo, 
+        checkTodo, 
+        newProject, 
+        editTodo, 
+        getSetup, 
+        deleteProject, 
+        deleteTodo
+    }
 
 }
 
