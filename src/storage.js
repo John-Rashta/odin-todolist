@@ -1,6 +1,9 @@
-function getProjects() {
+function getStorage() {
     if (localStorage.length === 0) {
-        return;
+        return [{
+            name: "Default",
+            todos: []
+        }];
     }
     let storage = [];
     let keys = Object.keys(localStorage);
@@ -17,8 +20,10 @@ function getProjects() {
 }
 
 
-function saveProject(project) {
+function saveStorage(project) {
 
     const jsonProject = JSON.stringify(project);
     localStorage.setItem(project.name, jsonProject);
 }
+
+export {getStorage, saveStorage};

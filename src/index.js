@@ -1,25 +1,39 @@
-import createTodo from "./todo.js";
-import { getProjects,saveProject } from "./storage.js";
+import setupData from "./data.js";
+
 
 
 function pageLoad() {
 
-    const localData = getProjects();
+    localStorage.clear();
+    const localData = setupData();
+    localData.newProject("family");
+    localData.newTodo({
+        title: "morn",
+        description: "another job",
+        date: "15-12-2024",
+        time: "15:00",
+        priority: "3",
+        notes: ""
+    }, "Family")
 
-    for (proj of localData) {
+    localData.editTodo({
+        oldName: "morn",
+        title: "morn",
+        description: "maybe not today",
+        date: "15-12-2024",
+        time: "15:00",
+        priority: "3",
+        notes: ""
+    }, "Family")
 
-        for (todo of proj["todos"]) {
+    localData.checkTodo("morn", "Family");
+    localData.prioTodo("morn", "5", "Family");
 
-            if (todo) {
-
-                todo = createTodo(todo);
-
-            }
-
-        }
-    }
     
 }
+
+pageLoad();
+
 
 
 

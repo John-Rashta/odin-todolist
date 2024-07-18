@@ -1,9 +1,16 @@
 function createChecklist(value) {
 
-    let checklist = Boolean(value);
+    let checklist = value === "true";
+    
+    function getCheck() {
+        return this.checklist;
+    
+    }
+    function toggleCheck() {
 
-    const getCheck = () => checklist;
-    const toggleCheck = () => checklist = !checklist;
+        return this.checklist = !this.checklist;
+
+    } 
 
     return {getCheck, toggleCheck, checklist}
 }
@@ -28,8 +35,15 @@ function createPriority(value)  {
 
     let priority = Number(value);
 
-    const getPriority = () => priority;
-    const changePriority = (value) => priority = Number(value);
+    function getPriority() {
+
+        return this.priority;
+    }
+    function changePriority(value) {
+
+        this.priority = Number(value);
+
+    } 
 
     return {getPriority, changePriority, priority}
 }
