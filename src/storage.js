@@ -34,5 +34,4 @@ function deleteStorage(project) {
     localStorage.removeItem(project);
 }
 
-
 export {getStorage, saveStorage, deleteStorage};

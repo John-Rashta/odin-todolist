@@ -141,9 +141,11 @@ export default function setupData() {
 
     function getSetup() {
 
+        let tempKeys = Object.keys(localStorage);
+
         return {
             Default: localData[0],
-            Projects: storeKeys
+            Projects: tempKeys
         }
     }
 
@@ -194,6 +196,18 @@ export default function setupData() {
 
     }
 
+    function getProject(projName) {
+
+        for (let proj of localData) {
+
+            if (proj.name === projName) {
+
+                return proj;
+            }
+        }
+
+    }
+
 
     return {
         newTodo, 
@@ -203,7 +217,8 @@ export default function setupData() {
         editTodo, 
         getSetup, 
         deleteProject, 
-        deleteTodo
+        deleteTodo,
+        getProject
     }
 
 }
