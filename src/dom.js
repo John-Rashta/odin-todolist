@@ -45,9 +45,7 @@ export default function setupDom({Default, Projects}) {
 
     for (let key of currentKeys) {
 
-        const newDiv = document.createElement("div");
-        newDiv.textContent = key;
-        projDiv.appendChild(newDiv);
+        addProject(key);
     }
 
     sideBar.appendChild(projDiv);
@@ -66,20 +64,7 @@ export default function setupDom({Default, Projects}) {
     for (let key of Default["todos"]) {
 
         
-        const newDiv = document.createElement("div");
-        const upperDiv = document.createElement("div");
-        upperDiv.classList.toggle("todoTop");
-        const check = document.createElement("div");
-        check.classList.toggle("checkBox");
-        const titleDiv = document.createElement("div");
-        titleDiv.textContent = key.title;
-        const dateDiv = document.createElement("div");
-        dateDiv.textContent = key.dueDate;
-        upperDiv.appendChild(check);
-        upperDiv.appendChild(titleDiv);
-        upperDiv.appendChild(dateDiv);
-        newDiv.appendChild(upperDiv);
-        todoContainer.appendChild(newDiv);
+        loadTodo(key);
 
     }
 
@@ -92,6 +77,125 @@ export default function setupDom({Default, Projects}) {
     newTaskDiv.appendChild(newTaskIcon);
     newTaskDiv.appendChild(newTaskText);
     mainBody.appendChild(newTaskDiv);
+
+
+    function loadProject(proj) {
+
+        while (todoContainer.firstChild) {
+
+            todoContainer.removeChild(todoContainer.firstChild);
+        }
+
+        loadTitle.textContent = proj["name"];
+
+        for (let key of proj["todos"]) {
+
+        
+            loadTodo(key);
+    
+        }
+
+
+
+
+    }
+
+    function loadTodo(todo) {
+
+        const newDiv = document.createElement("div");
+        const upperDiv = document.createElement("div");
+        upperDiv.classList.toggle("todoTop");
+        const check = document.createElement("div");
+        check.classList.toggle("checkBox");
+        const titleDiv = document.createElement("div");
+        titleDiv.textContent = todo.title;
+        const dateDiv = document.createElement("div");
+        dateDiv.textContent = todo.dueDate;
+        upperDiv.appendChild(check);
+        upperDiv.appendChild(titleDiv);
+        upperDiv.appendChild(dateDiv);
+        newDiv.appendChild(upperDiv);
+        todoContainer.appendChild(newDiv);
+
+
+    }
+
+    function addProject(projName) {
+
+        const newDiv = document.createElement("div");
+        newDiv.textContent = projName;
+        projDiv.appendChild(newDiv);
+
+
+    }
+
+    function expandTodo(toDiv, todo) {
+
+        if (toDiv.children.length === 2) {
+
+            toDiv.removeChild(toDiv.lastChild);
+        }
+
+        const lowerDiv = document.createElement("div");
+        const discDiv = document.createElement("div");
+        const notesDiv = document.createElement("div");
+        const prioDiv = document.createElement("div");
+        discDiv.textContent = todo.description;
+        notesDiv.textContent = todo.notes;
+        prioDiv.textContent = todo.getPriority();
+        lowerDiv.appendChild(discDiv);
+        lowerDiv.appendChild(notesDiv);
+        lowerDiv.appendChild(prioDiv);
+        toDiv.appendChild(lowerDiv);
+
+
+
+
+    }
+
+    function deleteTodo(toDiv) {
+
+        toDiv.parentNode.removeChild(toDiv);
+
+    }
+
+    function editTodo(toDiv, todo) {
+
+        while (toDiv.firstChild) {
+
+            toDiv.removeChild(toDiv.firstChild);
+        }
+        const upperDiv = document.createElement("div");
+        upperDiv.classList.toggle("todoTop");
+        const check = document.createElement("div");
+        check.classList.toggle("checkBox");
+        const titleDiv = document.createElement("div");
+        titleDiv.textContent = todo.title;
+        const dateDiv = document.createElement("div");
+        dateDiv.textContent = todo.dueDate;
+        upperDiv.appendChild(check);
+        upperDiv.appendChild(titleDiv);
+        upperDiv.appendChild(dateDiv);
+        toDiv.appendChild(upperDiv);
+        expandTodo(toDiv, todo);
+
+
+    }
+
+    function allowEdit(toDiv) {
+
+        for (let child of toDiv.children) {
+
+            if(child.nodeName !== "BUTTON") {
+
+                child.contentEditable = true;
+            }
+        }
+
+
+
+
+    }
 
 
 

@@ -208,6 +208,30 @@ export default function setupData() {
 
     }
 
+    function getTodo(projName, todoTitle) {
+
+        for (let proj of localData) {
+
+            if (proj["name"] === projName) {
+
+                for (let todo of proj["todos"]) {
+
+                    if (todo.title === todoTitle) {
+
+                        return todo;
+                        
+                    }
+                }
+
+                
+            }
+        }
+
+
+
+
+    }
+
 
     return {
         newTodo, 
@@ -218,7 +242,8 @@ export default function setupData() {
         getSetup, 
         deleteProject, 
         deleteTodo,
-        getProject
+        getProject,
+        getTodo
     }
 
 }
