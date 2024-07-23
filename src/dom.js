@@ -117,6 +117,10 @@ export default function setupDom({Default, Projects}) {
         titleDiv.textContent = todo.title;
         const dateDiv = document.createElement("div");
         dateDiv.textContent = todo.dueDate;
+        newDiv.setAttribute("data-name", todo.title);
+        newDiv.classList.toggle("todoDiv");
+        titleDiv.classList.toggle("title");
+        dateDiv.classList.toggle("date");
         upperDiv.appendChild(check);
         upperDiv.appendChild(titleDiv);
         upperDiv.appendChild(dateDiv);
@@ -130,6 +134,7 @@ export default function setupDom({Default, Projects}) {
 
         const newDiv = document.createElement("div");
         newDiv.textContent = projName;
+        newDiv.classList.toggle("selectProject");
         projDiv.appendChild(newDiv);
 
 
@@ -149,6 +154,9 @@ export default function setupDom({Default, Projects}) {
         discDiv.textContent = todo.description;
         notesDiv.textContent = todo.notes;
         prioDiv.textContent = todo.getPriority();
+        discDiv.classList.toggle("description");
+        notesDiv.classList.toggle("notes");
+        prioDiv.classList.toggle("priority");
         lowerDiv.appendChild(discDiv);
         lowerDiv.appendChild(notesDiv);
         lowerDiv.appendChild(prioDiv);
@@ -207,10 +215,14 @@ export default function setupDom({Default, Projects}) {
         titleDiv.textContent = todo.title;
         const dateDiv = document.createElement("div");
         dateDiv.textContent = todo.dueDate;
+        toDiv.setAttribute("data-name", todo.title);
+        titleDiv.classList.toggle("title");
+        dateDiv.classList.toggle("date");
         upperDiv.appendChild(check);
         upperDiv.appendChild(titleDiv);
         upperDiv.appendChild(dateDiv);
         toDiv.appendChild(upperDiv);
+        toDiv.classList.toggle("expanded");
         expandTodo(toDiv, todo);
 
 
@@ -220,7 +232,7 @@ export default function setupDom({Default, Projects}) {
 
         for (let child of toDiv.children) {
 
-            if(child.nodeName !== "BUTTON") {
+            if(child.nodeName !== "BUTTON" || !child.classList.contains("checkBox")) {
 
                 child.contentEditable = true;
             }
@@ -237,6 +249,12 @@ export default function setupDom({Default, Projects}) {
 
     function newProjectForm() {
 
+        if (newProjDiv.children.length > 2) {
+
+            return;
+
+        }
+
         const newDiv = document.createElement("div");
         const newForm = document.createElement("form");
         const newInput = document.createElement("input");
@@ -245,8 +263,10 @@ export default function setupDom({Default, Projects}) {
         newForm.id = "projForm";
         newInput.setAttribute("type", "text");
         newInput.id = "newProj";
-        newInput.setAttribute("name", "newProj");
+        newInput.setAttribute("name", "name");
         newButton.setAttribute("type", "submit");
+        newButton.classList.toggle("addProject");
+        newButton.textContent = "Add";
         newForm.appendChild(newInput);
         newForm.appendChild(newButton);
         newDiv.appendChild(newForm);
@@ -272,6 +292,128 @@ export default function setupDom({Default, Projects}) {
         toDiv.classList.toggle("expanded");
 
 
+    }
+
+    function openModal() {
+
+        const dialog = document.querySelector("dialog");
+        dialog.showModal();
+        
+    }
+
+    function closeModal() {
+
+        const dialog = document.querySelector("dialog");
+        dialog.close();
+
+
+    }
+
+    function getProjName() {
+
+        return loadTitle.textContent;
+    }
+
+    function getTodoName(targetDiv) {
+
+        if (targetDiv.parentNode.dataset.name) {
+
+           
+            return targetDiv.parentNode.dataset.name;
+        } else if (targetDiv.parentNode.parentNode.dataset.name) {
+
+            
+            return targetDiv.parentNode.parentNode.dataset.name;
+        } else if (targetDiv.parentNode.parentNode.parentNode.dataset.name) {
+
+            return targetDiv.parentNode.parentNode.parentNode.dataset.name;
+        }
+    }
+
+    function changeCheck(targetDiv) {
+
+        targetDiv.classList.toggle("checked");
+    }
+
+    function getToDiv(targetDiv) {
+
+        if (targetDiv.parentNode.dataset.name) {
+
+            return targetDiv.parentNode;
+        } else if (targetDiv.parentNode.parentNode.dataset.name) {
+
+            return targetDiv.parentNode.parentNode;
+        } else if (targetDiv.parentNode.parentNode.parentNode.dataset.name) {
+
+            return targetDiv.parentNode.parentNode.parentNode;
+        }
+
+
+    }
+
+    function getTodoInfo(targetDiv) {
+
+        console.log(targetDiv);
+
+        const children = targetDiv.children;
+        const info = {oldName : targetDiv.dataset.name};
+
+        for (let child of children) {
+            
+
+            for (let input of child.children) {
+
+            switch(input.classList[0]) {
+
+                case "title":
+                    info["title"] = input.textContent;
+                    break;
+
+
+                case "description":
+
+                    info["description"] = input.textContent;
+                    break;
+
+                case "date":
+                    info["dueDate"] = input.textContent;
+                    break;
+                
+                case "priority":
+                    info["priority"] = input.textContent;
+                    break;
+                
+                case "notes": 
+                    info["notes"] = input.textContent;
+                    break;
+            }
+        }}
+
+        console.log(info);
+        return info;
+
+
+    }
+
+
+    return {
+        shortenTodo,
+        deleteForm,
+        newProjectForm,
+        allowEdit,
+        editTodo,
+        deleteTodo,
+        expandTodo,
+        addProject,
+        loadTodo,
+        loadProject,
+        openModal,
+        closeModal,
+        getProjName,
+        getTodoName,
+        changeCheck,
+        getToDiv,
+        getTodoInfo
     }
 
 

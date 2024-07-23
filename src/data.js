@@ -4,20 +4,27 @@ import { getStorage, saveStorage, deleteStorage } from "./storage.js";
 
 export default function setupData() {
 
-    const [localData, storeKeys] = getStorage();
+    const localData = getStorage();
+
 
     for (let proj of localData) {
 
+        
         for (let todo of proj["todos"]) {
 
             if (todo) {
 
-                todo = createTodo(todo);
+                
+                Object.assign(todo, createTodo(todo));
+               
+               
 
             }
 
         }
     }
+
+    
 
     function newProject(projectName) {
 
@@ -30,6 +37,7 @@ export default function setupData() {
 
         localData.push(tempProject);
         saveStorage(tempProject);
+        return tempProject["name"];
 
 
 
@@ -81,13 +89,12 @@ export default function setupData() {
                         todo.dueDate = data.dueDate;
                         todo.changePriority(data.priority);
                         todo.notes = data.notes;
-                        break;
+                        saveStorage(proj);
+                        return todo;
                         
                     }
                 }
 
-                saveStorage(proj);
-                break;
             }
         }
 
@@ -143,6 +150,8 @@ export default function setupData() {
 
         let tempKeys = Object.keys(localStorage);
 
+        
+
         return {
             Default: localData[0],
             Projects: tempKeys
@@ -170,7 +179,7 @@ export default function setupData() {
     }
 
     function deleteTodo(todoTitle, projName) {
-
+        
 
         for (let proj of localData) {
 

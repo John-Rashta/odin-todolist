@@ -8,7 +8,7 @@ function createChecklist(value) {
     }
     function toggleCheck() {
 
-        return this.checklist = !this.checklist;
+        this.checklist = !this.checklist;
 
     } 
 

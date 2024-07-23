@@ -9,34 +9,123 @@ function pageLoad() {
 
     localStorage.clear();
     const localData = setupData();
-    
-    
-    localData.newProject("family");
-    localData.newProject("work");
-    localData.newProject("vacation");
-    localData.newTodo({
-        title: "morn",
-        description: "another job",
-        date: "2024-12-15",
-        time: "15:00",
-        priority: "3",
-        notes: ""
-    }, "Default")
+    const localDom = setupDom(localData.getSetup());
 
-    localData.newTodo({
-        title: "goren",
-        description: "maybe not today",
-        date: "2024-12-12",
-        time: "12:00",
-        priority: "3",
-        notes: ""
-    }, "Default")
+    document.querySelector("body").addEventListener("click", (event) => {
+
+        if (event.target.classList.contains("newProject") || event.target.parentNode.classList.contains("newProject")) {
+
+            localDom.newProjectForm();
+
+        }
+
+        else if (event.target.classList.contains("addProject")) {
+
+            event.preventDefault();
+            const formData = new FormData(event.target.parentNode);
+            const projName = formData.get("name");
+            const capitalizedName = localData.newProject(projName);
+            localDom.addProject(capitalizedName);
+            localDom.deleteForm();
+
+        }
+
+        else if (event.target.classList.contains("selectProject")) {
+
+            localDom.loadProject(localData.getProject(event.target.textContent));
+        }
+
+        else if (event.target.classList.contains("newTask") || event.target.parentNode.classList.contains("newTask")) {
+
+            localDom.openModal();
+
+            
+        }
+
+
+        else if (event.target.id === "submitTodo") {
+
+            event.preventDefault();
+            const formData = new FormData(event.target.parentNode);
+            const newTodo = localData.newTodo({
+                title: formData.get("title"),
+                description: formData.get("description"),
+                date: formData.get("date"),
+                time: formData.get("time"),
+                priority: formData.get("priority"),
+                notes: formData.get("notes")
+
+
+            }, localDom.getProjName());
+            localDom.loadTodo(newTodo);
+            localDom.closeModal();
+
+
+        }
+
+        else if (event.target.classList.contains("checkBox")) {
+
+            localData.checkTodo(localDom.getTodoName(), localDom.getProjName());
+            localDom.changeCheck(event.target);
+            
+        }
+
+
+        else if (event.target.classList.contains("todoDiv") && !event.target.classList.contains("expanded") ||
+            event.target.parentNode.classList.contains("todoDiv") && !event.target.parentNode.classList.contains("expanded") ||
+            event.target.parentNode.parentNode.classList.contains("todoDiv") && !event.target.parentNode.parentNode.classList.contains("expanded")) {
+
+                const oldTodo = localData.getTodo(localDom.getProjName(), localDom.getTodoName(event.target));
+                localDom.expandTodo(localDom.getToDiv(event.target), oldTodo);
+
+
+            }
+
+        
+        else if (event.target.classList.contains("delete")) {
+
+            console.log(localDom.getToDiv(event.target))
+            localData.deleteTodo(localDom.getTodoName(event.target), localDom.getProjName());
+            localDom.deleteTodo(localDom.getToDiv(event.target));
+
+
+        }
+
+        else if (event.target.classList.contains("edit")) {
+
+            localDom.allowEdit(localDom.getToDiv(event.target), event.target);
+        }
+
+        else if (event.target.classList.contains("shorten")) {
+
+            console.log(localDom.getToDiv(event.target))
+            localDom.shortenTodo(localDom.getToDiv(event.target));
+
+
+        }
+
+        else if (event.target.classList.contains("saveTodo")) {
+
+            console.log(localDom.getToDiv(event.target));
+
+            const editTodo = localDom.getTodoInfo(localDom.getToDiv(event.target));
+            const newTodo  = localData.editTodo(editTodo, localDom.getProjName());
+            localDom.editTodo(localDom.getToDiv(event.target), newTodo);
+            
+
+
+        }
+
+    })
+    
+    
+    
 
     
     
-    let newTemp = (a, b) => compareAsc(a.dueDate, b.dueDate);
-    const newPro = localData.getProject("Default")["todos"].sort(sortByDate);
-    console.log(newPro);
+    
+    /// const newPro = localData.getProject("Default")["todos"].sort(sortByDate);
+    
 
 
     function sortByDate(a, b) {
@@ -52,7 +141,7 @@ function pageLoad() {
     
    
     
-    const localDom = setupDom(localData.getSetup());
+    
     
 }
 

@@ -6,7 +6,7 @@ function getStorage() {
         };
 
         localStorage.setItem(store.name, JSON.stringify(store));
-        return [[store], ["Default"]];
+        return [store];
     }
     let storage = [];
     let keys = Object.keys(localStorage);
@@ -19,7 +19,7 @@ function getStorage() {
 
     }
 
-    return [storage, keys];
+    return storage;
 }
 
 
