@@ -109,7 +109,7 @@
     align-self: center;
 }
 
-.checkBox::before {
+.checked::before {
 
     content: " \00a0\2714";
 
