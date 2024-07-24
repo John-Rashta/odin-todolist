@@ -53,10 +53,11 @@ function pageLoad() {
                 date: formData.get("date"),
                 time: formData.get("time"),
                 priority: formData.get("priority"),
-                notes: formData.get("notes")
+                notes: formData.get("notes"),
+                project: localDom.getProjName()
 
 
-            }, localDom.getProjName());
+            });
             localDom.loadTodo(newTodo);
             localDom.closeModal();
 
@@ -65,17 +66,17 @@ function pageLoad() {
 
         else if (event.target.classList.contains("checkBox")) {
 
-            localData.checkTodo(localDom.getTodoName(), localDom.getProjName());
+            localData.checkTodo(localDom.getTodoName(event.target), localDom.getTodoProject(event.target));
             localDom.changeCheck(event.target);
             
         }
 
 
-        else if (event.target.classList.contains("todoDiv") && !event.target.classList.contains("expanded") ||
-            event.target.parentNode.classList.contains("todoDiv") && !event.target.parentNode.classList.contains("expanded") ||
-            event.target.parentNode.parentNode.classList.contains("todoDiv") && !event.target.parentNode.parentNode.classList.contains("expanded")) {
+        else if (event.target.classList.contains("todoDiv") && !event.target.classList.contains("expanded") && !event.target.classList.contains("selectMenu") ||
+            event.target.parentNode.classList.contains("todoDiv") && !event.target.parentNode.classList.contains("expanded") && !event.target.classList.contains("selectMenu") ||
+            event.target.parentNode.parentNode.classList.contains("todoDiv") && !event.target.parentNode.parentNode.classList.contains("expanded") && !event.target.classList.contains("selectMenu")) {
 
-                const oldTodo = localData.getTodo(localDom.getProjName(), localDom.getTodoName(event.target));
+                const oldTodo = localData.getTodo(localDom.getTodoProject(event.target), localDom.getTodoName(event.target));
                 localDom.expandTodo(localDom.getToDiv(event.target), oldTodo);
 
 
@@ -84,8 +85,8 @@ function pageLoad() {
         
         else if (event.target.classList.contains("delete")) {
 
-            console.log(localDom.getToDiv(event.target))
-            localData.deleteTodo(localDom.getTodoName(event.target), localDom.getProjName());
+            
+            localData.deleteTodo(localDom.getTodoName(event.target), localDom.getTodoProject(event.target));
             localDom.deleteTodo(localDom.getToDiv(event.target));
 
 
@@ -98,7 +99,7 @@ function pageLoad() {
 
         else if (event.target.classList.contains("shorten")) {
 
-            console.log(localDom.getToDiv(event.target))
+            
             localDom.shortenTodo(localDom.getToDiv(event.target));
 
 
@@ -106,42 +107,33 @@ function pageLoad() {
 
         else if (event.target.classList.contains("saveTodo")) {
 
-            console.log(localDom.getToDiv(event.target));
+            
 
             const editTodo = localDom.getTodoInfo(localDom.getToDiv(event.target));
-            const newTodo  = localData.editTodo(editTodo, localDom.getProjName());
+            const newTodo  = localData.editTodo(editTodo);
             localDom.editTodo(localDom.getToDiv(event.target), newTodo);
             
 
 
+        } else if (event.target.classList.contains("home")) {
+
+            localDom.loadProject(localData.getDefault());
+        } else if (event.target.classList.contains("deleteProject") || event.target.parentNode.classList.contains("deleteProject")) {
+
+            localData.deleteProject(localDom.getProjName());
+            localDom.deleteProjSidebar(localDom.getProjName());
+            localDom.loadProject(localData.getDefault());
         }
 
     })
-    
-    
-    
 
-    
-    
-    
-    /// const newPro = localData.getProject("Default")["todos"].sort(sortByDate);
-    
+    document.querySelector(".todoMain").addEventListener("change", (event) => {
 
+        if (event.target.classList.contains("selectMenu")) {
 
-    function sortByDate(a, b) {
-
-        return compareAsc(a.dueDate, b.dueDate);
-
-
-    }
-    
-
-
-    
-    
-   
-    
-    
+            localData.prioTodo(localDom.getTodoName(event.target), localDom.todoColor(event.target), localDom.getTodoProject(event.target));
+        }
+    })
     
 }
 

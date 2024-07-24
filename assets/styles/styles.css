@@ -112,6 +112,23 @@
 .checked::before {
 
     content: " \00a0\2714";
+    
 
 
+}
+
+
+
+.todoComplete>div>div:not(.checkBox) {
+   
+  text-decoration: line-through;
+}
+
+
+.checkBox {
+
+  background-color: green;
+  width: 30px;
+  height: 30px;
+  text-align: center;
 }

@@ -53,6 +53,21 @@ function createNotes(value) {
     return {notes: value}
 }
 
+function createProject(value) {
+
+    let project = value;
+
+    function getProject() {
+
+        return this.project;
+
+
+    }
+    return {project, getProject}
+
+
+}
+
 
 
 export default function createTodo(form) {
@@ -63,6 +78,7 @@ export default function createTodo(form) {
         ...createDescription(form.description),
         ...createDate(form.dueDate),
         ...createPriority(form.priority),
-        ...createNotes(form.notes)
+        ...createNotes(form.notes),
+        ...createProject(form.project)
     }
 }

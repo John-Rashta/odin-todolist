@@ -1,5 +1,6 @@
 import plusOnly from "../assets/img/plus.svg";
 import plusBox from "../assets/img/plus-box.svg";
+import { compareDesc} from "date-fns";
 
 
 export default function setupDom({Default, Projects}) {
@@ -58,6 +59,7 @@ export default function setupDom({Default, Projects}) {
     const loadTitle = document.createElement("div");
     loadTitle.textContent = "Default";
     const todoContainer = document.createElement("div");
+    todoContainer.classList.toggle("todoMain");
     mainBody.appendChild(loadTitle);
     mainBody.appendChild(todoContainer);
 
@@ -76,7 +78,11 @@ export default function setupDom({Default, Projects}) {
     newTaskText.textContent = "New Task";
     newTaskDiv.appendChild(newTaskIcon);
     newTaskDiv.appendChild(newTaskText);
-    mainBody.appendChild(newTaskDiv);
+
+    const endDiv = document.createElement("div");
+    endDiv.appendChild(newTaskDiv);
+
+    mainBody.appendChild(endDiv);
 
 
     function loadProject(proj) {
@@ -93,6 +99,21 @@ export default function setupDom({Default, Projects}) {
         
             loadTodo(key);
     
+        }
+
+        while (endDiv.children.length > 1) {
+
+            endDiv.removeChild(endDiv.firstChild);
+        }
+
+        if (proj["name"] != "Default") {
+
+            const delProj = document.createElement("div");
+            delProj.textContent = "Delete Project";
+            delProj.classList.toggle("deleteProject");
+            endDiv.insertBefore(delProj, endDiv.firstChild);
+
+
         }
 
 
@@ -118,13 +139,58 @@ export default function setupDom({Default, Projects}) {
         const dateDiv = document.createElement("div");
         dateDiv.textContent = todo.dueDate;
         newDiv.setAttribute("data-name", todo.title);
+        newDiv.setAttribute("data-project", todo.getProject());
         newDiv.classList.toggle("todoDiv");
         titleDiv.classList.toggle("title");
         dateDiv.classList.toggle("date");
+
+        const selectDiv = document.createElement("select");
+        selectDiv.classList.toggle("selectMenu");
+        selectDiv.setAttribute("name", "selectPriority");
+        for (let i = 1; i < 6; i++) {
+
+            const newDiv = document.createElement("option");
+            newDiv.setAttribute("value", i);
+            newDiv.textContent = i;
+            if (i === todo.getPriority()) {
+
+                newDiv.setAttribute("selected", "");
+            }
+            prioColor(newDiv, i);
+            selectDiv.appendChild(newDiv);
+        }
+
+
+
+        upperDiv.appendChild(selectDiv);
         upperDiv.appendChild(check);
         upperDiv.appendChild(titleDiv);
         upperDiv.appendChild(dateDiv);
         newDiv.appendChild(upperDiv);
+
+        for (let child of todoContainer.children) {
+
+           const innerDiv = child.children;
+
+           for (let dateDiv of innerDiv[0].children) {
+
+            
+
+            if (dateDiv.classList.contains("date")) {
+
+
+                if (compareDesc(todo.dueDate, dateDiv.textContent) > 0) {
+
+                    todoContainer.insertBefore(newDiv, child);
+                    return;
+
+
+                }
+
+
+            }
+           }
+        }
         todoContainer.appendChild(newDiv);
 
 
@@ -150,16 +216,12 @@ export default function setupDom({Default, Projects}) {
         const lowerDiv = document.createElement("div");
         const discDiv = document.createElement("div");
         const notesDiv = document.createElement("div");
-        const prioDiv = document.createElement("div");
         discDiv.textContent = todo.description;
         notesDiv.textContent = todo.notes;
-        prioDiv.textContent = todo.getPriority();
         discDiv.classList.toggle("description");
         notesDiv.classList.toggle("notes");
-        prioDiv.classList.toggle("priority");
         lowerDiv.appendChild(discDiv);
         lowerDiv.appendChild(notesDiv);
-        lowerDiv.appendChild(prioDiv);
         toDiv.appendChild(lowerDiv);
 
         const bottomDiv = document.createElement("div");
@@ -316,7 +378,10 @@ export default function setupDom({Default, Projects}) {
 
     function getTodoName(targetDiv) {
 
-        if (targetDiv.parentNode.dataset.name) {
+        if (targetDiv.dataset.name) {
+
+            return targetDiv.dataset.name;
+        } else if (targetDiv.parentNode.dataset.name) {
 
            
             return targetDiv.parentNode.dataset.name;
@@ -333,11 +398,15 @@ export default function setupDom({Default, Projects}) {
     function changeCheck(targetDiv) {
 
         targetDiv.classList.toggle("checked");
+        getToDiv(targetDiv).classList.toggle("todoComplete");
     }
 
     function getToDiv(targetDiv) {
 
-        if (targetDiv.parentNode.dataset.name) {
+        if (targetDiv.dataset.name) {
+
+            return targetDiv;
+        } else if (targetDiv.parentNode.dataset.name) {
 
             return targetDiv.parentNode;
         } else if (targetDiv.parentNode.parentNode.dataset.name) {
@@ -356,7 +425,9 @@ export default function setupDom({Default, Projects}) {
         console.log(targetDiv);
 
         const children = targetDiv.children;
-        const info = {oldName : targetDiv.dataset.name};
+        const info = {oldName : targetDiv.dataset.name,
+                      project : targetDiv.dataset.project
+        };
 
         for (let child of children) {
             
@@ -379,10 +450,6 @@ export default function setupDom({Default, Projects}) {
                     info["dueDate"] = input.textContent;
                     break;
                 
-                case "priority":
-                    info["priority"] = input.textContent;
-                    break;
-                
                 case "notes": 
                     info["notes"] = input.textContent;
                     break;
@@ -393,6 +460,72 @@ export default function setupDom({Default, Projects}) {
         return info;
 
 
+    }
+
+    function prioColor(toDiv, prio) {
+
+        const prioClass = ["prioOne", "prioTwo", "prioThree", "prioFour", "prioFive"];
+
+        toDiv.classList.remove(...prioClass);
+
+        switch(prio) {
+
+            case "1":
+            case 1:
+                toDiv.classList.toggle(prioClass[0]);
+                break;
+                
+
+            case "2":
+            case 2:
+                toDiv.classList.toggle(prioClass[1]);
+                break;
+
+            case "3":
+            case 3:
+                toDiv.classList.toggle(prioClass[2]);
+                break;
+
+            case "4":
+            case 4:
+                toDiv.classList.toggle(prioClass[3]);
+                break;
+
+            case "5":
+            case 5:
+                toDiv.classList.toggle(prioClass[4]);
+                break;
+        }
+
+    }
+
+    function todoColor(selectDiv) {
+
+        const parentDiv = getToDiv(selectDiv);
+        const newPrio = selectDiv.options[event.target.selectedIndex].value;
+        prioColor(parentDiv, newPrio);
+        return newPrio;
+
+
+
+    }
+
+    function getTodoProject(toDiv) {
+
+        const parentDiv = getToDiv(toDiv);
+
+        return parentDiv.dataset.project;
+    }
+
+    function deleteProjSidebar(projName) {
+
+        for (let child of projDiv.children) {
+
+            if (child.textContent === projName) {
+
+                projDiv.removeChild(child);
+            }
+        }
     }
 
 
@@ -413,7 +546,10 @@ export default function setupDom({Default, Projects}) {
         getTodoName,
         changeCheck,
         getToDiv,
-        getTodoInfo
+        getTodoInfo,
+        todoColor,
+        getTodoProject,
+        deleteProjSidebar
     }
 
 

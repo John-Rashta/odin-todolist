@@ -1,5 +1,6 @@
 import createTodo from "./todo.js";
 import { getStorage, saveStorage, deleteStorage } from "./storage.js";
+import { compareAsc, format } from "date-fns";
 
 
 export default function setupData() {
@@ -44,7 +45,7 @@ export default function setupData() {
 
     }
 
-    function newTodo(data, projName) {
+    function newTodo(data) {
 
         
         const tempTodo = {
@@ -54,6 +55,7 @@ export default function setupData() {
             dueDate: `${data.date} ${data.time}`,
             priority: data.priority,
             notes: data.notes,
+            project: data.project
             
         }
 
@@ -61,7 +63,7 @@ export default function setupData() {
 
         for (let proj of localData) {
 
-            if (proj["name"] === projName) {
+            if (proj["name"] === data.project) {
 
                 proj["todos"].push(newTodo);
                 saveStorage(proj);
@@ -74,11 +76,11 @@ export default function setupData() {
 
     }
 
-    function editTodo(data, projName)  {
+    function editTodo(data)  {
 
         for (let proj of localData) {
 
-            if (proj["name"] === projName) {
+            if (proj["name"] === data.project) {
 
                 for (let todo of proj["todos"]) {
 
@@ -87,7 +89,6 @@ export default function setupData() {
                         todo.title = data.title;
                         todo.description = data.description;
                         todo.dueDate = data.dueDate;
-                        todo.changePriority(data.priority);
                         todo.notes = data.notes;
                         saveStorage(proj);
                         return todo;
@@ -153,7 +154,7 @@ export default function setupData() {
         
 
         return {
-            Default: localData[0],
+            Default: getDefault(),
             Projects: tempKeys
         }
     }
@@ -211,6 +212,7 @@ export default function setupData() {
 
             if (proj.name === projName) {
 
+                proj["todos"].sort(sortByDate);
                 return proj;
             }
         }
@@ -234,12 +236,40 @@ export default function setupData() {
 
                 
             }
+        }}
+
+    function getDefault() {
+
+        const tempDefault = {
+            name: "Default",
+            todos: []
         }
 
+        for (let proj of localData) {
 
+            for (let todo of proj["todos"]) {
+
+
+                tempDefault["todos"].push(todo);
+
+                
+            }
+        }
+        tempDefault["todos"].sort(sortByDate);
+        return tempDefault;
+    }
+
+    function sortByDate(a, b) {
+
+        return compareAsc(a.dueDate, b.dueDate);
 
 
     }
+
+
+
+
+    
 
 
     return {
@@ -252,7 +282,8 @@ export default function setupData() {
         deleteProject, 
         deleteTodo,
         getProject,
-        getTodo
+        getTodo,
+        getDefault
     }
 
 }
