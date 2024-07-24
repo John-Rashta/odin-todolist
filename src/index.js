@@ -7,7 +7,7 @@ import { compareAsc, format } from "date-fns";
 
 function pageLoad() {
 
-    localStorage.clear();
+    
     const localData = setupData();
     const localDom = setupDom(localData.getSetup());
 
@@ -24,6 +24,11 @@ function pageLoad() {
             event.preventDefault();
             const formData = new FormData(event.target.parentNode);
             const projName = formData.get("name");
+            if (!projName) {
+
+                localDom.deleteForm();
+                return;
+            }
             const capitalizedName = localData.newProject(projName);
             localDom.addProject(capitalizedName);
             localDom.deleteForm();
@@ -58,6 +63,14 @@ function pageLoad() {
 
 
             });
+
+            if (!newTodo) {
+
+                localDom.closeModal();
+                return;
+
+            }
+
             localDom.loadTodo(newTodo);
             localDom.closeModal();
 
@@ -120,6 +133,10 @@ function pageLoad() {
             localDom.loadProject(localData.getDefault());
         } else if (event.target.classList.contains("deleteProject") || event.target.parentNode.classList.contains("deleteProject")) {
 
+            if (!confirm("Are you sure you want to delete the Project?")) {
+
+                return;
+            }
             localData.deleteProject(localDom.getProjName());
             localDom.deleteProjSidebar(localDom.getProjName());
             localDom.loadProject(localData.getDefault());

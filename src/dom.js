@@ -27,14 +27,17 @@ export default function setupDom({Default, Projects}) {
     const newProjText = document.createElement("div");
     newProjText.textContent = "New Project";
     newProjDiv.classList.toggle("newProject");
+    const newProjMain = document.createElement("div");
     
 
     newProjDiv.appendChild(newProjIcon);
     newProjDiv.appendChild(newProjText);
 
+    newProjMain.appendChild(newProjDiv);
+
 
     sideBar.appendChild(homeDiv);
-    sideBar.appendChild(newProjDiv);
+    sideBar.appendChild(newProjMain);
 
     const projHead = document.createElement("div");
     projHead.textContent = "Projects";
@@ -80,6 +83,7 @@ export default function setupDom({Default, Projects}) {
     newTaskDiv.appendChild(newTaskText);
 
     const endDiv = document.createElement("div");
+    endDiv.classList.toggle("endDiv");
     endDiv.appendChild(newTaskDiv);
 
     mainBody.appendChild(endDiv);
@@ -103,7 +107,7 @@ export default function setupDom({Default, Projects}) {
 
         while (endDiv.children.length > 1) {
 
-            endDiv.removeChild(endDiv.firstChild);
+            endDiv.removeChild(endDiv.lastChild);
         }
 
         if (proj["name"] != "Default") {
@@ -111,7 +115,7 @@ export default function setupDom({Default, Projects}) {
             const delProj = document.createElement("div");
             delProj.textContent = "Delete Project";
             delProj.classList.toggle("deleteProject");
-            endDiv.insertBefore(delProj, endDiv.firstChild);
+            endDiv.appendChild(delProj);
 
 
         }
@@ -124,49 +128,15 @@ export default function setupDom({Default, Projects}) {
     function loadTodo(todo) {
 
         const newDiv = document.createElement("div");
-        const upperDiv = document.createElement("div");
-        upperDiv.classList.toggle("todoTop");
-        const check = document.createElement("div");
-        check.classList.toggle("checkBox");
-
-        if (todo.getCheck()) {
-
-            check.classList.toggle("checked");
-        }
-
-        const titleDiv = document.createElement("div");
-        titleDiv.textContent = todo.title;
-        const dateDiv = document.createElement("div");
-        dateDiv.textContent = todo.dueDate;
+        const upperDiv = createUpperDiv(todo);
         newDiv.setAttribute("data-name", todo.title);
         newDiv.setAttribute("data-project", todo.getProject());
         newDiv.classList.toggle("todoDiv");
-        titleDiv.classList.toggle("title");
-        dateDiv.classList.toggle("date");
-
-        const selectDiv = document.createElement("select");
-        selectDiv.classList.toggle("selectMenu");
-        selectDiv.setAttribute("name", "selectPriority");
-        for (let i = 1; i < 6; i++) {
-
-            const newDiv = document.createElement("option");
-            newDiv.setAttribute("value", i);
-            newDiv.textContent = i;
-            if (i === todo.getPriority()) {
-
-                newDiv.setAttribute("selected", "");
-            }
-            prioColor(newDiv, i);
-            selectDiv.appendChild(newDiv);
-        }
-
-
-
-        upperDiv.appendChild(selectDiv);
-        upperDiv.appendChild(check);
-        upperDiv.appendChild(titleDiv);
-        upperDiv.appendChild(dateDiv);
         newDiv.appendChild(upperDiv);
+        if (todo.getCheck()) {
+
+            newDiv.classList.toggle("todoComplete");
+        }
 
         for (let child of todoContainer.children) {
 
@@ -265,24 +235,7 @@ export default function setupDom({Default, Projects}) {
 
             toDiv.removeChild(toDiv.firstChild);
         }
-        const upperDiv = document.createElement("div");
-        upperDiv.classList.toggle("todoTop");
-        const check = document.createElement("div");
-        check.classList.toggle("checkBox");
-        if (todo.getCheck()) {
-
-            check.classList.toggle("checked");
-        }
-        const titleDiv = document.createElement("div");
-        titleDiv.textContent = todo.title;
-        const dateDiv = document.createElement("div");
-        dateDiv.textContent = todo.dueDate;
-        toDiv.setAttribute("data-name", todo.title);
-        titleDiv.classList.toggle("title");
-        dateDiv.classList.toggle("date");
-        upperDiv.appendChild(check);
-        upperDiv.appendChild(titleDiv);
-        upperDiv.appendChild(dateDiv);
+        const upperDiv = createUpperDiv(todo);
         toDiv.appendChild(upperDiv);
         toDiv.classList.toggle("expanded");
         expandTodo(toDiv, todo);
@@ -292,12 +245,14 @@ export default function setupDom({Default, Projects}) {
 
     function allowEdit(toDiv, editButton) {
 
-        for (let child of toDiv.children) {
+        for (let div of toDiv.children) {
 
-            if(child.nodeName !== "BUTTON" || !child.classList.contains("checkBox")) {
+            for (let child of div.children) {
+            if(child.nodeName !== "BUTTON" && !child.classList.contains("checkBox") && !child.classList.contains("selectMenu") ) {
 
                 child.contentEditable = true;
-            }
+            }}
+
         }
 
         editButton.classList.toggle("edit");
@@ -332,15 +287,15 @@ export default function setupDom({Default, Projects}) {
         newForm.appendChild(newInput);
         newForm.appendChild(newButton);
         newDiv.appendChild(newForm);
-        newProjDiv.appendChild(newDiv);
+        newProjMain.appendChild(newDiv);
 
     }
 
     function deleteForm() {
 
-        if (newProjDiv.children.length > 2) {
+        if (newProjMain.children.length > 1) {
 
-            newProjDiv.removeChild(newProjDiv.lastChild);
+            newProjMain.removeChild(newProjMain.lastChild);
         }
     }
 
@@ -422,7 +377,7 @@ export default function setupDom({Default, Projects}) {
 
     function getTodoInfo(targetDiv) {
 
-        console.log(targetDiv);
+        
 
         const children = targetDiv.children;
         const info = {oldName : targetDiv.dataset.name,
@@ -456,7 +411,7 @@ export default function setupDom({Default, Projects}) {
             }
         }}
 
-        console.log(info);
+        
         return info;
 
 
@@ -527,6 +482,57 @@ export default function setupDom({Default, Projects}) {
             }
         }
     }
+
+    function createUpperDiv(todo) {
+
+
+        
+        const upperDiv = document.createElement("div");
+        upperDiv.classList.toggle("todoTop");
+        const check = document.createElement("div");
+        check.classList.toggle("checkBox");
+
+        if (todo.getCheck()) {
+
+            check.classList.toggle("checked");
+        }
+
+        const titleDiv = document.createElement("div");
+        titleDiv.textContent = todo.title;
+        const dateDiv = document.createElement("div");
+        dateDiv.textContent = todo.dueDate;
+        titleDiv.classList.toggle("title");
+        dateDiv.classList.toggle("date");
+
+        const selectDiv = document.createElement("select");
+        selectDiv.classList.toggle("selectMenu");
+        selectDiv.setAttribute("name", "selectPriority");
+        for (let i = 1; i < 6; i++) {
+
+            const newDiv = document.createElement("option");
+            newDiv.setAttribute("value", i);
+            newDiv.textContent = i;
+            if (i === todo.getPriority()) {
+
+                newDiv.setAttribute("selected", "");
+            }
+            prioColor(newDiv, i);
+            selectDiv.appendChild(newDiv);
+        }
+
+
+
+       
+        upperDiv.appendChild(check);
+        upperDiv.appendChild(titleDiv);
+        upperDiv.appendChild(dateDiv);
+        upperDiv.appendChild(selectDiv);
+        
+        return upperDiv;
+
+
+    }
+
 
 
     return {

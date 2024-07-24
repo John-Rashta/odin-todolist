@@ -47,6 +47,10 @@ export default function setupData() {
 
     function newTodo(data) {
 
+        if (data.title  === "" || data.date === "") {
+
+            return;
+        }
         
         const tempTodo = {
             checklist: "false",
@@ -64,6 +68,14 @@ export default function setupData() {
         for (let proj of localData) {
 
             if (proj["name"] === data.project) {
+
+                for (let name of proj["todos"]) {
+
+                    if (name["title"] === data.title) {
+
+                        return;
+                    }
+                }
 
                 proj["todos"].push(newTodo);
                 saveStorage(proj);
@@ -265,6 +277,7 @@ export default function setupData() {
 
 
     }
+    
 
 
 
