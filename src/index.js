@@ -30,6 +30,12 @@ function pageLoad() {
                 return;
             }
             const capitalizedName = localData.newProject(projName);
+            if (!capitalizedName) {
+
+                
+                localDom.deleteForm();
+                return;
+            }
             localDom.addProject(capitalizedName);
             localDom.deleteForm();
 
@@ -124,6 +130,11 @@ function pageLoad() {
 
             const editTodo = localDom.getTodoInfo(localDom.getToDiv(event.target));
             const newTodo  = localData.editTodo(editTodo);
+            if (!newTodo) {
+
+                localDom.editTodo(localDom.getToDiv(event.target), localData.getTodo(localDom.getTodoProject(event.target), localDom.getTodoName(event.target)));
+                return;
+            }
             localDom.editTodo(localDom.getToDiv(event.target), newTodo);
             
 

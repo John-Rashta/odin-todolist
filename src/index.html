@@ -16,7 +16,7 @@
             </div>
             <div class="descriptionform">
                 <label for="description">Description:</label>
-                <textarea rows="5" cols="5" name="description" id="description"></textarea>
+                <textarea rows="5" cols="30" name="description" id="description"></textarea>
             </div>
             <div class="dateform">
                 <label for="date">Date:</label>
@@ -27,7 +27,8 @@
                 <input type="time" id="time" name="time">
             </div>
             <div class="priorityform">
-                <select name="priority">
+                <label for="priority">Priority:</label>
+                <select name="priority" id="priority">
                     <option value="1" selected>1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -37,7 +38,7 @@
             </div>
             <div class="notesform">
                 <label for="notes">Notes:</label>
-                <textarea rows="5" cols="5" name="notes" id="notes"></textarea>
+                <textarea rows="5" cols="25" name="notes" id="notes"></textarea>
             </div>
             <button type="submit" id="submitTodo">Submit</button>
         </form>

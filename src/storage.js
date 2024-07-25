@@ -34,4 +34,15 @@ function deleteStorage(project) {
     localStorage.removeItem(project);
 }
 
-export {getStorage, saveStorage, deleteStorage};
+function checkProjName(projName) {
+
+    const tempKeys = Object.keys(localStorage);
+    
+    if (tempKeys.includes(projName)) {
+
+        
+        return true;
+    }
+}
+
+export {getStorage, saveStorage, deleteStorage, checkProjName};

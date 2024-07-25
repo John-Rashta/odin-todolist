@@ -11,7 +11,9 @@ export default function setupDom({Default, Projects}) {
     const sideBar = document.createElement("div");
     sideBar.classList.toggle("sidebar");
     const header = document.createElement("div");
+    header.classList.toggle("mainHeader");
     const mainBody = document.createElement("div");
+    mainBody.classList.toggle("mainBody");
     baseLine.appendChild(sideBar);
     baseLine.appendChild(header);
     baseLine.appendChild(mainBody);
@@ -28,6 +30,7 @@ export default function setupDom({Default, Projects}) {
     newProjText.textContent = "New Project";
     newProjDiv.classList.toggle("newProject");
     const newProjMain = document.createElement("div");
+    newProjMain.classList.toggle("newProjMain");
     
 
     newProjDiv.appendChild(newProjIcon);
@@ -41,6 +44,7 @@ export default function setupDom({Default, Projects}) {
 
     const projHead = document.createElement("div");
     projHead.textContent = "Projects";
+    projHead.classList.toggle("projHead");
     sideBar.appendChild(projHead);
 
 
@@ -55,7 +59,7 @@ export default function setupDom({Default, Projects}) {
     sideBar.appendChild(projDiv);
 
     const headerDiv = document.createElement("div");
-    header.textContent = "Todo-List";
+    headerDiv.textContent = "Todo-List";
     header.appendChild(headerDiv);
 
 
@@ -63,8 +67,11 @@ export default function setupDom({Default, Projects}) {
     loadTitle.textContent = "Default";
     const todoContainer = document.createElement("div");
     todoContainer.classList.toggle("todoMain");
-    mainBody.appendChild(loadTitle);
-    mainBody.appendChild(todoContainer);
+    const topContainer = document.createElement("div");
+    topContainer.classList.toggle("mainTop");
+    topContainer.appendChild(loadTitle);
+    topContainer.appendChild(todoContainer);
+    mainBody.appendChild(topContainer);
 
     for (let key of Default["todos"]) {
 
@@ -128,6 +135,7 @@ export default function setupDom({Default, Projects}) {
     function loadTodo(todo) {
 
         const newDiv = document.createElement("div");
+        prioColor(newDiv, todo.getPriority());
         const upperDiv = createUpperDiv(todo);
         newDiv.setAttribute("data-name", todo.title);
         newDiv.setAttribute("data-project", todo.getProject());
@@ -190,6 +198,7 @@ export default function setupDom({Default, Projects}) {
         notesDiv.textContent = todo.notes;
         discDiv.classList.toggle("description");
         notesDiv.classList.toggle("notes");
+        lowerDiv.classList.toggle("todoBot");
         lowerDiv.appendChild(discDiv);
         lowerDiv.appendChild(notesDiv);
         toDiv.appendChild(lowerDiv);
@@ -206,6 +215,7 @@ export default function setupDom({Default, Projects}) {
         shortButton.textContent = "^";
         editButton.textContent = "Edit";
         deleteButton.textContent = "Delete";
+        buttonDiv.classList.toggle("editDelete");
         buttonDiv.appendChild(editButton);
         buttonDiv.appendChild(deleteButton);
         bottomDiv.appendChild(shortButton);
@@ -248,7 +258,10 @@ export default function setupDom({Default, Projects}) {
         for (let div of toDiv.children) {
 
             for (let child of div.children) {
-            if(child.nodeName !== "BUTTON" && !child.classList.contains("checkBox") && !child.classList.contains("selectMenu") ) {
+            if(child.nodeName !== "BUTTON" &&
+                !child.classList.contains("checkBox") &&
+                !child.classList.contains("selectMenu") &&
+                !child.classList.contains("editDelete") ) {
 
                 child.contentEditable = true;
             }}
@@ -266,7 +279,9 @@ export default function setupDom({Default, Projects}) {
 
     function newProjectForm() {
 
-        if (newProjDiv.children.length > 2) {
+
+
+        if (newProjMain.children.length > 1) {
 
             return;
 
@@ -459,6 +474,7 @@ export default function setupDom({Default, Projects}) {
         const parentDiv = getToDiv(selectDiv);
         const newPrio = selectDiv.options[event.target.selectedIndex].value;
         prioColor(parentDiv, newPrio);
+        prioColor(selectDiv, newPrio);
         return newPrio;
 
 
@@ -515,6 +531,8 @@ export default function setupDom({Default, Projects}) {
             if (i === todo.getPriority()) {
 
                 newDiv.setAttribute("selected", "");
+                prioColor(selectDiv, i);
+                
             }
             prioColor(newDiv, i);
             selectDiv.appendChild(newDiv);

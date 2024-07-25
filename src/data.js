@@ -1,6 +1,7 @@
 import createTodo from "./todo.js";
-import { getStorage, saveStorage, deleteStorage } from "./storage.js";
-import { compareAsc, format } from "date-fns";
+import { getStorage, saveStorage, deleteStorage, checkProjName } from "./storage.js";
+import { compareAsc } from "date-fns";
+
 
 
 export default function setupData() {
@@ -29,11 +30,20 @@ export default function setupData() {
 
     function newProject(projectName) {
 
+        
+
         const tempProject = {
             name: projectName[0].toUpperCase() + projectName.slice(1),
             todos: [
 
             ]
+        }
+        
+
+        if (checkProjName(tempProject["name"])) {
+
+            
+            return;
         }
 
         localData.push(tempProject);
@@ -89,6 +99,34 @@ export default function setupData() {
     }
 
     function editTodo(data)  {
+
+        if ((new Date(data.dueDate)).toString() === "Invalid Date") {
+
+            return;
+        }
+
+        if (data.title === "") {
+
+            return;
+        }
+
+        for (let proj of localData) {
+
+            if (proj["name"] === data.project) {
+
+                for (let todo of proj["todos"]) {
+
+                    if (todo["title"] === data.title) {
+
+                        return;
+                        
+                    }
+                }
+
+            }
+        }
+
+        
 
         for (let proj of localData) {
 

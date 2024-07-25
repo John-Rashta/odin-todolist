@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'SourceNormal';
+  src: url('../fonts/SourceSansPro-Regular.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SourceBold';
+  src: url('../fonts/SourceSansPro-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+
 /* by Josh W. Comeau taken from https://www.joshwcomeau.com/css/custom-css-reset/ */
 /*
   1. Use a more-intuitive box-sizing model.
@@ -47,27 +63,33 @@
   }
 
 
-/* basic layout */
+/* basic layout and styling*/
 
 .content {
     
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: auto 3fr;
     grid-template-rows: 1fr 3fr;
+    font-family: "SourceNormal", Arial, sans-serif;
 }
 
 .sidebar {
-    padding-top: 10%;
-    padding-left: 10%;
+    padding-top: 20%;
+    padding-left: 20%;
     grid-row: 1 / 3;
-    background-color: red;
     cursor: default;
+    width: max(20vw, 25vh);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 1fr) 3fr;
 }
 
 .newProject {
     display: flex;
-    margin-bottom: 10%;
+    font-size: 1.5rem;
+    text-wrap: nowrap;
+    
 }
 
 .newProject>div {
@@ -81,12 +103,10 @@
 
 .home {
     
-    font-size: 1.5rem;
-}
-
-.projContainer {
-
-    background-color: cyan;
+    font-size: 2rem;
+    align-self: center;
+    padding-left: 20%;
+    font-family: "Sourcebold";
 }
 
 .todoTop {
@@ -101,7 +121,7 @@
 }
 
 .newTask>img {
-    height: min(90px, 7vw);
+    height: min(70px, 6vw);
 }
 
 .newTask>div {
@@ -112,14 +132,18 @@
 .checked::before {
 
     content: " \00a0\2714";
-    
+    color: white;
 
+}
 
+.selectProject::before {
+
+  content: "> ";
 }
 
 
 
-.todoComplete>div>div:not(.checkBox) {
+.todoComplete>div>div:not(.checkBox, .editDelete) {
    
   text-decoration: line-through;
 }
@@ -127,10 +151,13 @@
 
 .checkBox {
 
-  background-color: green;
+  background-color: #16a34a;
   width: 30px;
   height: 30px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .endDiv {
@@ -139,5 +166,382 @@
   justify-content: space-between;
   padding: 30px;
   align-items: center;
+  font-size: 1.2rem;
+  font-family: "SourceBold";
+  
 
 }
+
+.projHead {
+
+  margin-top: 15%;
+  align-self: center;
+  
+}
+
+
+
+
+.newProjMain>div>form>input {
+
+   max-width: 85%;
+}
+
+
+.mainBody {
+
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  justify-content: space-between;
+  
+
+}
+
+.todoMain {
+  
+  overflow: auto;
+}
+
+dialog {
+  margin: auto;
+  padding: 0;
+}
+
+
+#todoform {
+
+  display: flex; 
+  flex-direction: column;
+  gap: 15px;
+  font-family: "SourceNormal", Arial, sans-serif;
+  padding: 50px 80px;
+}
+
+.descriptionform,
+.notesform {
+
+   display: flex;
+}
+
+#submitTodo {
+
+  align-self: center;
+  padding: 6px 25px;
+  border-radius: 15px;
+  border-style: solid;
+  border-width: 2px;
+  
+}
+
+#todoform label {
+
+  margin-right: 10px;
+}
+
+.titleform {
+
+  display: flex;
+}
+
+.titleform>input {
+
+  flex: 1;
+}
+
+.mainHeader {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  font-size: 2.5rem;
+  
+}
+
+.mainTop>div:first-child {
+
+  text-align: center;
+  font-size: 1.75rem;
+}
+
+.mainBody {
+
+  padding: 30px 100px;
+}
+
+#projForm>button {
+
+  background-color: #f59e0b;
+  color: #78350f;
+  border-color: #ea580c;
+  
+}
+
+#projForm>input {
+  margin: 5px 5px 5px 0px;
+  background-color: #fed7aa;
+  border-color: #f97316;
+  
+}
+
+.todoMain {
+
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding-left: 20%;
+  padding-bottom: 5%;
+  
+}
+
+.buttonsDiv {
+
+  display: flex;
+  justify-content: space-between;
+  
+  
+  
+}
+
+.todoDiv {
+
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: fit-content;
+  padding: 20px 40px;
+  border-radius: 30px;
+  box-shadow: 5px 5px 5px lightgray;
+}
+
+.todoBot {
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mainTop {
+
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.shorten {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  height: 80%;
+  padding: 3px 10px;
+  border-radius: 50%;
+  
+
+}
+
+.shorten,
+.edit,
+.delete,
+.saveTodo {
+
+  border-style: none;
+}
+
+
+.buttonsDiv>div {
+
+  display: flex;
+  gap: 20px;
+}
+
+.edit,
+.delete,
+.saveTodo {
+
+  padding: 0px 15px;
+}
+
+.todoTop {
+
+  display: flex;
+  gap: 50px;
+}
+
+.checkBox {
+
+  border-radius: 30px;
+}
+
+.todoTop>div {
+
+  padding: 5px 10px;
+}
+
+.selectMenu {
+  padding: 5px 5px;
+  align-self: center;
+}
+
+.selectProject,
+.projHead {
+
+  font-size: 1.3rem;
+}
+
+.deleteProject {
+
+  border-style: solid;
+  padding: 5px 10px;
+  border-color:  #27272a;
+}
+
+/* color styling */
+
+
+.prioOne {
+
+  background-color: #fecaca;
+
+}
+
+.prioTwo {
+
+  background-color: #fed7aa;
+
+}
+
+.prioThree {
+
+  background-color: #fef08a;
+
+}
+
+.prioFour {
+
+  background-color: #d9f99d;
+
+
+}
+
+.prioFive {
+
+  background-color: #bbf7d0;
+
+
+}
+
+.todoDiv {
+
+  color: #0e7490;
+}
+
+.selectMenu {
+
+  color: #0e7490;
+  border-color: #0e7490;
+}
+
+
+[contentEditable] {
+
+  background-color:#f3e8ff;
+  border-style: solid;
+  border-color: #a16207;
+
+
+}
+
+.shorten {
+
+  background-color: #22d3ee;
+  color:  #262626;
+}
+
+.edit {
+
+  background-color: #10b981;
+  color:  #262626;
+}
+
+.delete {
+
+  background-color:#f87171;
+  color: #262626;
+}
+
+.sidebar {
+
+  background-color: #eab308;
+}
+
+.mainHeader {
+
+  background-color: #ca8a04;
+  color: #4d7c0f;
+}
+
+.mainBody {
+
+  background-color: #d8d789;
+}
+
+.mainTop>div:first-child {
+
+  color: #4d7c0f;
+  
+}
+
+.endDiv {
+  color: #27272a;
+}
+
+.home,
+.newProjMain {
+
+  color: #854d0e;
+}
+
+.selectProject,
+.projHead {
+
+  color: #9a3412;
+}
+
+
+#todoform {
+
+  background-color: #7dd3fc;
+  color: #0b3e5f;
+  
+  
+}
+
+dialog {
+
+  border-color: #075985;
+  border-radius: 20px;
+}
+
+
+#todoform input,
+#todoform textarea,
+#todoform select {
+
+  background-color: #cffafe;
+  border-style: none;
+}
+
+#submitTodo {
+
+  color: #022c22;
+  background-color: #14b8a6;
+  border-color: #15803d;
+}
+
+.saveTodo {
+
+  background-color: #38bdf8;
+  color: #0c4a6e;
+}
+
